@@ -1,0 +1,140 @@
+/* Rental Gantt Chart - Custom Styles */
+
+/* Contract item styles based on status */
+.vis-item.active-contract {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-color: #047857;
+    color: white;
+    font-weight: 500;
+}
+
+.vis-item.future-contract {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    border-color: #d97706;
+    color: #78350f;
+    font-weight: 500;
+}
+
+.vis-item.expired-contract {
+    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+    border-color: #4b5563;
+    color: white;
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+.vis-item.unknown-contract {
+    background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
+    border-color: #64748b;
+    color: #1e293b;
+}
+
+/* Enhance readability */
+.vis-item-content {
+    padding: 4px 8px;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Group labels styling */
+.vis-label {
+    padding: 8px !important;
+    border-right: 1px solid #e5e7eb !important;
+    background-color: #f9fafb !important;
+}
+
+.vis-label .vis-inner {
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    line-height: 1.4;
+}
+
+/* Timeline panel styling */
+.vis-panel {
+    background-color: #ffffff;
+}
+
+/* Current time marker */
+.vis-current-time {
+    background-color: #dc2626;
+    width: 2px;
+}
+
+/* Tooltip styling */
+.vis-tooltip {
+    background-color: #1f2937 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 12px !important;
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3) !important;
+    max-width: 300px !important;
+}
+
+/* Timeline borders and lines */
+.vis-time-axis .vis-text {
+    color: #4b5563;
+    font-size: 12px;
+}
+
+.vis-time-axis .vis-grid.vis-minor {
+    border-color: #f3f4f6;
+}
+
+.vis-time-axis .vis-grid.vis-major {
+    border-color: #e5e7eb;
+}
+
+/* Scrollbar styling (webkit browsers) */
+.vis-timeline::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.vis-timeline::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.vis-timeline::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 5px;
+}
+
+.vis-timeline::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Range selection styling */
+.vis-drag-left,
+.vis-drag-right {
+    background-color: #3b82f6;
+    cursor: col-resize;
+}
+
+/* Hover effects */
+.vis-item:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+}
+
+/* Focus styling */
+.vis-item.vis-selected {
+    border-width: 2px;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* Loading state */
+.timeline-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    color: #6b7280;
+}
