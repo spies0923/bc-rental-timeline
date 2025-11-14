@@ -27,17 +27,24 @@ var maxLoadAttempts = 20; // Wait up to 10 seconds (20 * 500ms)
     }
 })();
 
-// Set body and html dimensions
-document.documentElement.style.height = '100%';
-document.documentElement.style.margin = '0';
-document.documentElement.style.padding = '0';
-document.body.style.height = '100%';
-document.body.style.margin = '0';
-document.body.style.padding = '0';
-document.body.style.overflow = 'auto';
+// Wait for DOM to be ready before manipulating it
+function initializeTimeline() {
+    // Set body and html dimensions
+    if (document.documentElement) {
+        document.documentElement.style.height = '100%';
+        document.documentElement.style.margin = '0';
+        document.documentElement.style.padding = '0';
+    }
 
-// Create container for Timeline
-if (!window.ganttContainer) {
+    if (document.body) {
+        document.body.style.height = '100%';
+        document.body.style.margin = '0';
+        document.body.style.padding = '0';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Create container for Timeline
+    if (!window.ganttContainer && document.body) {
     window.ganttContainer = document.createElement('div');
     window.ganttContainer.id = 'rental-gantt-container';
 
@@ -55,8 +62,12 @@ if (!window.ganttContainer) {
 
     document.body.appendChild(window.ganttContainer);
 
-    console.log('Timeline container created:', window.ganttContainer.offsetWidth, 'x', window.ganttContainer.offsetHeight);
-    console.log('Container bounding rect:', window.ganttContainer.getBoundingClientRect());
+        console.log('Timeline container created:', window.ganttContainer.offsetWidth, 'x', window.ganttContainer.offsetHeight);
+        console.log('Container bounding rect:', window.ganttContainer.getBoundingClientRect());
+    }
+
+    // Wait for vis-timeline library to load before notifying AL
+    waitForLibrary();
 }
 
 // Wait for vis-timeline library to load before notifying AL
@@ -77,7 +88,12 @@ function waitForLibrary() {
     }
 }
 
-// Start waiting for library
-waitForLibrary();
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeTimeline);
+} else {
+    // DOM already loaded
+    initializeTimeline();
+}
 
 console.log('Rental Timeline control add-in initializing...');
