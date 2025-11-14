@@ -8,12 +8,13 @@ var maxLoadAttempts = 20; // Wait up to 10 seconds (20 * 500ms)
 
 // CRITICAL FIX: BC ignores RequestedHeight when other controls exist on Card page
 // Solution: Manipulate parent iframe AND all parent containers directly from inside
-(function() {
+function forceIframeVisibility() {
     try {
         // Get reference to the iframe element (this script runs inside the iframe)
         var iframe = window.frameElement;
         if (iframe) {
             // AGGRESSIVELY force iframe to be visible with !important equivalent
+            // Also add a bright border so it's IMPOSSIBLE to miss
             iframe.style.setProperty('height', '700px', 'important');
             iframe.style.setProperty('min-height', '700px', 'important');
             iframe.style.setProperty('max-height', 'none', 'important');
@@ -22,8 +23,8 @@ var maxLoadAttempts = 20; // Wait up to 10 seconds (20 * 500ms)
             iframe.style.setProperty('opacity', '1', 'important');
             iframe.style.setProperty('position', 'relative', 'important');
             iframe.style.setProperty('flex', '1 1 700px', 'important');
-
-            console.log('Iframe forced to 700px with !important styles');
+            iframe.style.setProperty('border', '3px solid #0078d4', 'important');
+            iframe.style.setProperty('background-color', '#ffffff', 'important');
 
             // Walk up parent container chain and force visibility
             var parent = iframe.parentElement;
@@ -39,21 +40,37 @@ var maxLoadAttempts = 20; // Wait up to 10 seconds (20 * 500ms)
                     parent.style.setProperty('height', 'auto', 'important');
                     parent.style.setProperty('min-height', '700px', 'important');
                     parent.style.setProperty('max-height', 'none', 'important');
-                    console.log('Fixed collapsed parent at level', level);
                 }
 
                 parent = parent.parentElement;
                 level++;
             }
 
-            console.log('Forced visibility on', level, 'parent containers');
-        } else {
-            console.warn('Could not access parent iframe element');
+            return level;
         }
     } catch (e) {
         console.error('Error manipulating iframe:', e);
     }
-})();
+    return 0;
+}
+
+// Initial visibility forcing
+var fixedLevels = forceIframeVisibility();
+console.log('Iframe forced to 700px with !important styles + blue border');
+console.log('Forced visibility on', fixedLevels, 'parent containers');
+
+// CONTINUOUS FORCING: Re-apply every 500ms for first 5 seconds
+// This combats any BC CSS that tries to hide the iframe after initial render
+var visibilityAttempts = 0;
+var visibilityInterval = setInterval(function() {
+    visibilityAttempts++;
+    forceIframeVisibility();
+
+    if (visibilityAttempts >= 10) {
+        clearInterval(visibilityInterval);
+        console.log('Stopped continuous visibility forcing after 10 attempts');
+    }
+}, 500);
 
 // Wait for DOM to be ready before manipulating it
 function initializeTimeline() {
