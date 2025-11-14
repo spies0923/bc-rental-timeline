@@ -7,18 +7,46 @@ var libraryLoadAttempts = 0;
 var maxLoadAttempts = 20; // Wait up to 10 seconds (20 * 500ms)
 
 // CRITICAL FIX: BC ignores RequestedHeight when other controls exist on Card page
-// Solution: Manipulate parent iframe directly from inside
+// Solution: Manipulate parent iframe AND all parent containers directly from inside
 (function() {
     try {
         // Get reference to the iframe element (this script runs inside the iframe)
         var iframe = window.frameElement;
         if (iframe) {
-            // Force iframe to have visible height
-            iframe.style.height = '700px';
-            iframe.style.minHeight = '700px';
-            iframe.style.display = 'block';
-            iframe.style.visibility = 'visible';
-            console.log('Iframe height forced to 700px');
+            // AGGRESSIVELY force iframe to be visible with !important equivalent
+            iframe.style.setProperty('height', '700px', 'important');
+            iframe.style.setProperty('min-height', '700px', 'important');
+            iframe.style.setProperty('max-height', 'none', 'important');
+            iframe.style.setProperty('display', 'block', 'important');
+            iframe.style.setProperty('visibility', 'visible', 'important');
+            iframe.style.setProperty('opacity', '1', 'important');
+            iframe.style.setProperty('position', 'relative', 'important');
+            iframe.style.setProperty('flex', '1 1 700px', 'important');
+
+            console.log('Iframe forced to 700px with !important styles');
+
+            // Walk up parent container chain and force visibility
+            var parent = iframe.parentElement;
+            var level = 0;
+            while (parent && level < 10) {
+                parent.style.setProperty('display', 'block', 'important');
+                parent.style.setProperty('visibility', 'visible', 'important');
+                parent.style.setProperty('opacity', '1', 'important');
+                parent.style.setProperty('overflow', 'visible', 'important');
+
+                // If parent has height restrictions, force them open
+                if (parent.style.height === '0px' || parent.style.maxHeight === '0px') {
+                    parent.style.setProperty('height', 'auto', 'important');
+                    parent.style.setProperty('min-height', '700px', 'important');
+                    parent.style.setProperty('max-height', 'none', 'important');
+                    console.log('Fixed collapsed parent at level', level);
+                }
+
+                parent = parent.parentElement;
+                level++;
+            }
+
+            console.log('Forced visibility on', level, 'parent containers');
         } else {
             console.warn('Could not access parent iframe element');
         }
